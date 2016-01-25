@@ -1,0 +1,26 @@
+{
+  "apps" : [{
+    "name"        : "Ghost Blog",
+    "script"      : "index.js",
+    "args"        : [],
+    "watch"       : true,
+    "node_args"   : "",
+    "merge_logs"  : true,
+    "autorestart" : true,
+    "cwd"	  : "manrueda-blog",
+    "env": {
+      "DRIVE_STORAGE_CLIENT_ID": "",
+      "DRIVE_STORAGE_EMAIL": "",
+      "DRIVE_STORAGE_KEY": "",
+      "DRIVE_STORAGE_KEY_ID": "",
+      "EMAIL_ADDRESS": "",
+      "EMAIL_PASSWORD": "",
+      "EMAIL_USER": "",
+      "SITE_URL": "",
+      "DATABASE_URL": "",
+      "PORT": 8080,
+      "NODE_ENV":"production",
+      "USE_KEY_METRICS_HTTP_ANALYSIS": true
+    }
+  }]
+}

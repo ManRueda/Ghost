@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="google-site-verification" content="-V6V7D6KnkglkOcrx9xwXmjUtXmTd0bm1EA8pjRW0vE" />
+    <title>{{meta_title}}</title>
+    {{> meta}}
+    <link rel="stylesheet" type="text/css" href="{{asset "css/uno-zen.css"}}" />
+    <link rel="stylesheet" type="text/css" href="{{asset "css/prism.css"}}" />
+    {{ghost_head}}
+
+  </head>
+  <body class="{{body_class}}">
+    <section id="menu-button" class="expanded">
+      <a><i class="icon icon-list"></i></a>
+    </section>
+    {{> aside}}
+    <main>
+      <section id="search-results"></section>
+      <section class="content">
+        {{{body}}}
+        {{> footer}}
+      </section>
+    </main>
+    {{ghost_foot}}
+    <script type="text/javascript" src="{{asset "js/jquery.ghostHunter.min.js"}}"></script>
+    <script type="text/javascript" src="{{asset "js/uno-zen.js"}}"></script>
+    <script type="text/javascript" src="{{asset "js/prism.js"}}"></script>
+    {{> google-analytics}}
+  </body>
+</html>
