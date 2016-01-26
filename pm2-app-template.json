@@ -2,7 +2,7 @@
  "apps" : [{
    "name"        : "Ghost Blog",
    "script"      : "index.js",
-   "args"        : ["--production"],
+   "args"        : [],
    "watch"       : false,
    "node_args"   : "",
    "merge_logs"  : true,
