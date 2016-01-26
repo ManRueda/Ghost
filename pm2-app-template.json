@@ -3,11 +3,12 @@
     "name"        : "Ghost Blog",
     "script"      : "index.js",
     "args"        : [],
-    "watch"       : true,
+    "watch"       : false,
     "node_args"   : "",
     "merge_logs"  : true,
     "autorestart" : true,
     "cwd"	  : "manrueda-blog",
+    "max_memory_restart" : "450M",
     "env": {
       "DRIVE_STORAGE_CLIENT_ID": "",
       "DRIVE_STORAGE_EMAIL": "",
