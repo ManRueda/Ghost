@@ -304,7 +304,7 @@ var _              = require('lodash'),
                     command: function (mode) {
                         switch (mode) {
                             case 'init':
-                                return 'echo Installing client dependencies... && npm install';
+                                return 'echo Installing client dependencies...';
 
                             case 'prod':
                                 return emberPath + ' build --environment=production --silent';
