@@ -1,3 +1,9 @@
 [submodule "content/themes/casper"]
 	path = content/themes/casper
 	url = https://github.com/TryGhost/Casper.git
+[submodule "content/storage/ghost-google-drive"]
+	path = content/storage/ghost-google-drive
+	url = git@github.com:robincsamuel/ghost-google-drive.git
+[submodule "content/themes/uno-zen"]
+	path = content/themes/uno-zen
+	url = git@github.com:ManRueda/uno-zen.git

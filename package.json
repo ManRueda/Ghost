@@ -18,7 +18,7 @@
   "license": "MIT",
   "main": "./core/index",
   "scripts": {
-    "preinstall": "npm install semver && node -e \"require('./core/server/utils/startup-check.js').nodeVersion()\"",
+    "preinstall": "npm install semver && node -e \"require('./core/server/utils/startup-check.js').nodeVersion()\" && cd content/storage/ghost-google-drive && npm install",
     "start": "node index",
     "test": "grunt validate --verbose"
   },
@@ -59,6 +59,7 @@
     "passport-http-bearer": "1.0.1",
     "passport-oauth2-client-password": "0.1.2",
     "path-match": "1.2.3",
+    "pmx": "0.5.9",
     "request": "2.65.0",
     "rss": "1.2.0",
     "semver": "5.0.3",

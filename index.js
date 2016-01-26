@@ -12,6 +12,11 @@ require('./core/server/utils/startup-check').check();
 express = require('express');
 ghost = require('./core');
 errors = require('./core/server/errors');
+if (process.env.USE_KEY_METRICS_HTTP_ANALYSIS === true || process.env.USE_KEY_METRICS_HTTP_ANALYSIS === 'true'){
+  require('pmx').init({
+    http : true
+  });
+}
 
 // Create our parent express app instance.
 parentApp = express();

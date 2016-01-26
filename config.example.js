@@ -1,10 +1,19 @@
 // # Ghost Configuration
 // Setup your Ghost install for various [environments](http://support.ghost.org/config/#about-environments).
-
 // Ghost runs in `development` mode by default. Full documentation can be found at http://support.ghost.org/config/
-
 var path = require('path'),
     config;
+
+var DRIVE_STORAGE_KEY = new Buffer(process.env.DRIVE_STORAGE_KEY.split('\\n').join(require('os').EOL), 'ASCII').toString('ASCII');
+var postgresRegex = /^(postgres:\/\/)([^:]+):([^@]+)@([^:]+):([^\/]+)\/([^/]+)$/;
+var parsedPostgres = postgresRegex.exec(process.env.DATABASE_URL);
+var postgresInfo = {
+    user: parsedPostgres[2],
+    password: parsedPostgres[3],
+    host: parsedPostgres[4],
+    port: parsedPostgres[5],
+    database: parsedPostgres[6]
+};
 
 config = {
     // ### Production
@@ -13,10 +22,28 @@ config = {
     production: {
         url: 'http://my-ghost-blog.com',
         mail: {},
+        url: process.env.SITE_URL,
+        mail: {
+            from: process.env.EMAIL_ADDRESS,
+            transport: 'SMTP',
+            options: {
+                service: 'Mailgun',
+                auth: {
+                    user: process.env.EMAIL_USER, // mailgun username
+                    pass: process.env.EMAIL_PASSWORD // mailgun password
+                }
+            }
+        },
         database: {
             client: 'sqlite3',
+            client: 'postgres',
             connection: {
                 filename: path.join(__dirname, '/content/data/ghost.db')
+                host: postgresInfo.host,
+                user: postgresInfo.user,
+                password: postgresInfo.password,
+                database: postgresInfo.database,
+                port: postgresInfo.port
             },
             debug: false
         },
@@ -24,6 +51,19 @@ config = {
         server: {
             host: '127.0.0.1',
             port: '2368'
+            host: '0.0.0.0',
+            port: process.env.PORT || '2368'
+        },
+        storage: {
+            active: 'ghost-google-drive',
+            'ghost-google-drive': {
+                key: {
+                    private_key_id: process.env.DRIVE_STORAGE_KEY_ID,
+                    private_key: DRIVE_STORAGE_KEY,
+                    client_email: process.env.DRIVE_STORAGE_EMAIL,
+                    client_id: process.env.DRIVE_STORAGE_CLIENT_ID
+                }
+            }
         }
     },
 
@@ -99,11 +139,11 @@ config = {
         database: {
             client: 'mysql',
             connection: {
-                host     : '127.0.0.1',
-                user     : 'root',
-                password : '',
-                database : 'ghost_testing',
-                charset  : 'utf8'
+                host: '127.0.0.1',
+                user: 'root',
+                password: '',
+                database: 'ghost_testing',
+                charset: 'utf8'
             }
         },
         server: {
@@ -120,11 +160,11 @@ config = {
         database: {
             client: 'pg',
             connection: {
-                host     : '127.0.0.1',
-                user     : 'postgres',
-                password : '',
-                database : 'ghost_testing',
-                charset  : 'utf8'
+                host: '127.0.0.1',
+                user: 'postgres',
+                password: '',
+                database: 'ghost_testing',
+                charset: 'utf8'
             }
         },
         server: {
