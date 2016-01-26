@@ -20,8 +20,6 @@ config = {
     // When running Ghost in the wild, use the production environment.
     // Configure your URL and mail settings here
     production: {
-        url: 'http://my-ghost-blog.com',
-        mail: {},
         url: process.env.SITE_URL,
         mail: {
             from: process.env.EMAIL_ADDRESS,
@@ -35,10 +33,8 @@ config = {
             }
         },
         database: {
-            client: 'sqlite3',
             client: 'postgres',
             connection: {
-                filename: path.join(__dirname, '/content/data/ghost.db')
                 host: postgresInfo.host,
                 user: postgresInfo.user,
                 password: postgresInfo.password,
@@ -49,8 +45,6 @@ config = {
         },
 
         server: {
-            host: '127.0.0.1',
-            port: '2368'
             host: '0.0.0.0',
             port: process.env.PORT || '2368'
         },
