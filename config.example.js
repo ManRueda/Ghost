@@ -5,15 +5,6 @@ var path = require('path'),
     config;
 
 var DRIVE_STORAGE_KEY = new Buffer(process.env.DRIVE_STORAGE_KEY.split('\\n').join(require('os').EOL), 'ASCII').toString('ASCII');
-var postgresRegex = /^(postgres:\/\/)([^:]+):([^@]+)@([^:]+):([^\/]+)\/([^/]+)$/;
-var parsedPostgres = postgresRegex.exec(process.env.DATABASE_URL);
-var postgresInfo = {
-    user: parsedPostgres[2],
-    password: parsedPostgres[3],
-    host: parsedPostgres[4],
-    port: parsedPostgres[5],
-    database: parsedPostgres[6]
-};
 
 config = {
     // ### Production
@@ -33,13 +24,14 @@ config = {
             }
         },
         database: {
-            client: 'postgres',
+            client: 'mysql',
             connection: {
-                host: postgresInfo.host,
-                user: postgresInfo.user,
-                password: postgresInfo.password,
-                database: postgresInfo.database,
-                port: postgresInfo.port
+                host: process.env.DATABASE_URL,
+                port: process.env.DATABASE_PORT,
+                user: process.env.DATABASE_USER,
+                password: process.env.DATABASE_PASSWORD,
+                database: process.env.DATABASE_DB,
+                charset: process.env.DATABASE_CHARSET
             },
             debug: false
         },
