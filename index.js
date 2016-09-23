@@ -9,7 +9,6 @@ var ghost = require('./core'),
 // Make sure dependencies are installed and file system permissions are correct.
 require('./core/server/utils/startup-check').check();
 
-<<<<<<< HEAD
 // Proceed with startup
 express = require('express');
 ghost = require('./core');
@@ -24,8 +23,6 @@ if (process.env.USE_KEY_METRICS_HTTP_ANALYSIS === true || process.env.USE_KEY_ME
 parentApp = express();
 
 // Call Ghost to get an instance of GhostServer
-=======
->>>>>>> upstream/stable
 ghost().then(function (ghostServer) {
     // Mount our Ghost instance on our desired subdirectory path if it exists.
     parentApp.use(ghostServer.config.paths.subdir, ghostServer.rootApp);
