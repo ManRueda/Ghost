@@ -7,6 +7,3 @@
 [submodule "content/themes/uno-zen"]
 	path = content/themes/uno-zen
 	url = git@github.com:ManRueda/uno-zen.git
-[submodule "core/client"]
-	path = core/client
-	url = https://github.com/TryGhost/Ghost-Admin.git
