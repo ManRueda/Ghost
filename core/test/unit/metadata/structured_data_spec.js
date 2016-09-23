@@ -1,19 +1,29 @@
-/*globals describe, it*/
 var getStructuredData = require('../../../server/data/meta/structured_data'),
     should = require('should');
 
 describe('getStructuredData', function () {
-    it('should return structored data from metadata', function () {
+    it('should return structured data from metadata', function (done) {
         var metadata = {
             blog: {
-                title: 'Blog Title'
+                title: 'Blog Title',
+                facebook: 'testuser',
+                twitter: '@testuser'
             },
+            authorName: 'Test User',
             ogType: 'article',
             metaTitle: 'Post Title',
             canonicalUrl: 'http://mysite.com/post/my-post-slug/',
             publishedDate: '2015-12-25T05:35:01.234Z',
             modifiedDate: '2016-01-21T22:13:05.412Z',
-            coverImage: 'http://mysite.com/content/image/mypostcoverimage.jpg',
+            coverImage: {
+                url: 'http://mysite.com/content/image/mypostcoverimage.jpg',
+                dimensions: {
+                    width: 500,
+                    height: 500
+                }
+            },
+            authorFacebook: 'testpage',
+            creatorTwitter: '@twitterpage',
             keywords: ['one', 'two', 'tag'],
             metaDescription: 'Post meta description'
         },  structuredData = getStructuredData(metadata);
@@ -22,45 +32,64 @@ describe('getStructuredData', function () {
             'article:modified_time': '2016-01-21T22:13:05.412Z',
             'article:published_time': '2015-12-25T05:35:01.234Z',
             'article:tag': ['one', 'two', 'tag'],
+            'article:publisher': 'https://www.facebook.com/testuser',
+            'article:author': 'https://www.facebook.com/testpage',
             'og:description': 'Post meta description',
             'og:image': 'http://mysite.com/content/image/mypostcoverimage.jpg',
+            'og:image:width': 500,
+            'og:image:height': 500,
             'og:site_name': 'Blog Title',
             'og:title': 'Post Title',
             'og:type': 'article',
             'og:url': 'http://mysite.com/post/my-post-slug/',
             'twitter:card': 'summary_large_image',
+            'twitter:data1': 'Test User',
+            'twitter:data2': ['one', 'two', 'tag'].join(', '),
             'twitter:description': 'Post meta description',
-            'twitter:image:src': 'http://mysite.com/content/image/mypostcoverimage.jpg',
+            'twitter:image': 'http://mysite.com/content/image/mypostcoverimage.jpg',
+            'twitter:label1': 'Written by',
+            'twitter:label2': 'Filed under',
             'twitter:title': 'Post Title',
-            'twitter:url': 'http://mysite.com/post/my-post-slug/'
+            'twitter:url': 'http://mysite.com/post/my-post-slug/',
+            'twitter:site': '@testuser',
+            'twitter:creator': '@twitterpage'
         });
+        done();
     });
 
-    it('should return structored data from metadata with no nulls', function () {
+    it('should return structured data from metadata with no nulls', function (done) {
         var metadata = {
             blog: {
-                title: 'Blog Title'
+                title: 'Blog Title',
+                facebook: '',
+                twitter: ''
             },
+            authorName: 'Test User',
             ogType: 'article',
             metaTitle: 'Post Title',
             canonicalUrl: 'http://mysite.com/post/my-post-slug/',
-            publishedDate: '2015-12-25T05:35:01.234Z',
             modifiedDate: '2016-01-21T22:13:05.412Z',
-            coverImage: undefined,
+            authorFacebook: null,
+            creatorTwitter: null,
+            coverImage: {
+                url: undefined
+            },
             keywords: null,
             metaDescription: null
         },  structuredData = getStructuredData(metadata);
 
         should.deepEqual(structuredData, {
             'article:modified_time': '2016-01-21T22:13:05.412Z',
-            'article:published_time': '2015-12-25T05:35:01.234Z',
             'og:site_name': 'Blog Title',
             'og:title': 'Post Title',
             'og:type': 'article',
             'og:url': 'http://mysite.com/post/my-post-slug/',
             'twitter:card': 'summary',
+            'twitter:data1': 'Test User',
+            'twitter:label1': 'Written by',
             'twitter:title': 'Post Title',
             'twitter:url': 'http://mysite.com/post/my-post-slug/'
         });
+        done();
     });
 });

@@ -1,5 +1,3 @@
-/*globals describe, it*/
-/*jshint expr:true*/
 var should    = require('should'),
     hbs = require('express-hbs'),
 

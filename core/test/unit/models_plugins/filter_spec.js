@@ -1,5 +1,3 @@
-/*globals describe, it, before, beforeEach, afterEach */
-/*jshint expr:true*/
 var should = require('should'),
     sinon = require('sinon'),
     rewire = require('rewire'),
@@ -11,14 +9,10 @@ var should = require('should'),
 
     sandbox = sinon.sandbox.create();
 
-// To stop jshint complaining
-should.equal(true, true);
-
 describe('Filter', function () {
     before(function () {
-        return models.init().then(function () {
-            ghostBookshelf = models.Base;
-        });
+        models.init();
+        ghostBookshelf = models.Base;
     });
 
     beforeEach(function () {
@@ -34,13 +28,13 @@ describe('Filter', function () {
     describe('Base Model', function () {
         describe('Enforced & Default Filters', function () {
             it('should add filter functions to prototype', function () {
-                ghostBookshelf.Model.prototype.enforcedFilters.should.be.a.Function;
-                ghostBookshelf.Model.prototype.defaultFilters.should.be.a.Function;
+                ghostBookshelf.Model.prototype.enforcedFilters.should.be.a.Function();
+                ghostBookshelf.Model.prototype.defaultFilters.should.be.a.Function();
             });
 
             it('filter functions should return undefined', function () {
-                should(ghostBookshelf.Model.prototype.enforcedFilters()).be.undefined;
-                should(ghostBookshelf.Model.prototype.defaultFilters()).be.undefined;
+                should(ghostBookshelf.Model.prototype.enforcedFilters()).be.undefined();
+                should(ghostBookshelf.Model.prototype.defaultFilters()).be.undefined();
             });
         });
 
@@ -53,7 +47,7 @@ describe('Filter', function () {
             });
 
             it('should add function to prototype', function () {
-                ghostBookshelf.Model.prototype.fetchAndCombineFilters.should.be.a.Function;
+                ghostBookshelf.Model.prototype.fetchAndCombineFilters.should.be.a.Function();
             });
 
             it('should set _filters to be the result of combineFilters', function () {
@@ -70,9 +64,9 @@ describe('Filter', function () {
             it('should call combineFilters with undefined x4 if passed no options', function () {
                 var result = ghostBookshelf.Model.prototype.fetchAndCombineFilters();
 
-                filterUtils.combineFilters.calledOnce.should.be.true;
+                filterUtils.combineFilters.calledOnce.should.be.true();
                 filterUtils.combineFilters.firstCall.args.should.eql([undefined, undefined, undefined, undefined]);
-                should(result._filters).be.undefined;
+                should(result._filters).be.undefined();
             });
 
             it('should call combineFilters with enforced filters if set', function () {
@@ -82,10 +76,10 @@ describe('Filter', function () {
 
                 result = ghostBookshelf.Model.prototype.fetchAndCombineFilters();
 
-                filterSpy.calledOnce.should.be.true;
-                filterUtils.combineFilters.calledOnce.should.be.true;
+                filterSpy.calledOnce.should.be.true();
+                filterUtils.combineFilters.calledOnce.should.be.true();
                 filterUtils.combineFilters.firstCall.args.should.eql(['status:published', undefined, undefined, undefined]);
-                should(result._filters).be.undefined;
+                should(result._filters).be.undefined();
             });
 
             it('should call combineFilters with default filters if set', function () {
@@ -95,10 +89,10 @@ describe('Filter', function () {
 
                 result = ghostBookshelf.Model.prototype.fetchAndCombineFilters();
 
-                filterSpy.calledOnce.should.be.true;
-                filterUtils.combineFilters.calledOnce.should.be.true;
+                filterSpy.calledOnce.should.be.true();
+                filterUtils.combineFilters.calledOnce.should.be.true();
                 filterUtils.combineFilters.firstCall.args.should.eql([undefined, 'page:false', undefined, undefined]);
-                should(result._filters).be.undefined;
+                should(result._filters).be.undefined();
             });
 
             it('should call combineFilters with custom filters if set', function () {
@@ -106,9 +100,9 @@ describe('Filter', function () {
                     filter: 'tag:photo'
                 });
 
-                filterUtils.combineFilters.calledOnce.should.be.true;
+                filterUtils.combineFilters.calledOnce.should.be.true();
                 filterUtils.combineFilters.firstCall.args.should.eql([undefined, undefined, 'tag:photo', undefined]);
-                should(result._filters).be.undefined;
+                should(result._filters).be.undefined();
             });
 
             it('should call combineFilters with old-style custom filters if set', function () {
@@ -116,9 +110,9 @@ describe('Filter', function () {
                     where: 'author:cameron'
                 });
 
-                filterUtils.combineFilters.calledOnce.should.be.true;
+                filterUtils.combineFilters.calledOnce.should.be.true();
                 filterUtils.combineFilters.firstCall.args.should.eql([undefined, undefined, undefined, 'author:cameron']);
-                should(result._filters).be.undefined;
+                should(result._filters).be.undefined();
             });
 
             it('should call combineFilters with enforced and defaults if set', function () {
@@ -130,11 +124,11 @@ describe('Filter', function () {
 
                 result = ghostBookshelf.Model.prototype.fetchAndCombineFilters();
 
-                filterSpy.calledOnce.should.be.true;
-                filterSpy2.calledOnce.should.be.true;
-                filterUtils.combineFilters.calledOnce.should.be.true;
+                filterSpy.calledOnce.should.be.true();
+                filterSpy2.calledOnce.should.be.true();
+                filterUtils.combineFilters.calledOnce.should.be.true();
                 filterUtils.combineFilters.firstCall.args.should.eql(['status:published', 'page:false', undefined, undefined]);
-                should(result._filters).be.undefined;
+                should(result._filters).be.undefined();
             });
 
             it('should call combineFilters with all values if set', function () {
@@ -149,16 +143,16 @@ describe('Filter', function () {
                     where: 'author:cameron'
                 });
 
-                filterSpy.calledOnce.should.be.true;
-                filterSpy2.calledOnce.should.be.true;
-                filterUtils.combineFilters.calledOnce.should.be.true;
+                filterSpy.calledOnce.should.be.true();
+                filterSpy2.calledOnce.should.be.true();
+                filterUtils.combineFilters.calledOnce.should.be.true();
                 filterUtils.combineFilters.firstCall.args
                     .should.eql(['status:published', 'page:false', 'tag:photo', 'author:cameron']);
-                should(result._filters).be.undefined;
+                should(result._filters).be.undefined();
             });
         });
 
-        describe('Apply Filters', function () {
+        describe('Apply Default and Custom Filters', function () {
             var fetchSpy,
                 restoreGQL,
                 filterGQL;
@@ -179,18 +173,18 @@ describe('Filter', function () {
             });
 
             it('should call fetchAndCombineFilters if _filters not set', function () {
-                var result = ghostBookshelf.Model.prototype.applyFilters();
+                var result = ghostBookshelf.Model.prototype.applyDefaultAndCustomFilters();
 
-                fetchSpy.calledOnce.should.be.true;
-                should(result._filters).be.null;
+                fetchSpy.calledOnce.should.be.true();
+                should(result._filters).be.null();
             });
 
             it('should NOT call fetchAndCombineFilters if _filters IS set', function () {
                 ghostBookshelf.Model.prototype._filters = 'test';
 
-                var result = ghostBookshelf.Model.prototype.applyFilters();
+                var result = ghostBookshelf.Model.prototype.applyDefaultAndCustomFilters();
 
-                fetchSpy.called.should.be.false;
+                fetchSpy.called.should.be.false();
                 result._filters.should.eql('test');
             });
 
@@ -198,10 +192,10 @@ describe('Filter', function () {
                 ghostBookshelf.Model.prototype._filters = {statements: [
                     {prop: 'title', op: '=', value: 'Hello Word'}
                 ]};
-                ghostBookshelf.Model.prototype.applyFilters();
+                ghostBookshelf.Model.prototype.applyDefaultAndCustomFilters();
 
-                fetchSpy.called.should.be.false;
-                filterGQL.knexify.called.should.be.true;
+                fetchSpy.called.should.be.false();
+                filterGQL.knexify.called.should.be.true();
                 filterGQL.knexify.firstCall.args[1].should.eql({statements: [
                     {prop: 'title', op: '=', value: 'Hello Word'}
                 ]});
@@ -213,8 +207,8 @@ describe('Filter', function () {
                     {prop: 'tags', op: 'IN', value: ['photo', 'video']}
                 ]};
 
-                ghostBookshelf.Model.prototype.applyFilters();
-                filterGQL.json.printStatements.calledOnce.should.be.true;
+                ghostBookshelf.Model.prototype.applyDefaultAndCustomFilters();
+                filterGQL.json.printStatements.calledOnce.should.be.true();
                 filterGQL.json.printStatements.firstCall.args[0].should.eql([
                     {prop: 'tags', op: 'IN', value: ['photo', 'video']}
                 ]);
@@ -241,10 +235,10 @@ describe('Filter', function () {
 
             it('should return empty statement object when there are no filters', function () {
                 combineFilters().should.eql({statements: []});
-                parseSpy.called.should.be.false;
-                mergeSpy.calledOnce.should.be.true;
-                findSpy.called.should.be.false;
-                rejectSpy.called.should.be.false;
+                parseSpy.called.should.be.false();
+                mergeSpy.calledOnce.should.be.true();
+                findSpy.called.should.be.false();
+                rejectSpy.called.should.be.false();
             });
 
             describe('Single filter rules', function () {
@@ -254,10 +248,10 @@ describe('Filter', function () {
                             {prop: 'status', op: '=', value: 'published'}
                         ]
                     });
-                    parseSpy.calledOnce.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    findSpy.called.should.be.false;
-                    rejectSpy.called.should.be.false;
+                    parseSpy.calledOnce.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    findSpy.called.should.be.false();
+                    rejectSpy.called.should.be.false();
                 });
 
                 it('should return default filters if only those are set (undefined)', function () {
@@ -266,10 +260,10 @@ describe('Filter', function () {
                             {prop: 'page', op: '=', value: false}
                         ]
                     });
-                    parseSpy.calledOnce.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    findSpy.called.should.be.false;
-                    rejectSpy.called.should.be.false;
+                    parseSpy.calledOnce.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    findSpy.called.should.be.false();
+                    rejectSpy.called.should.be.false();
                 });
 
                 it('should return default filters if only those are set (null)', function () {
@@ -278,10 +272,10 @@ describe('Filter', function () {
                             {prop: 'page', op: '=', value: false}
                         ]
                     });
-                    parseSpy.calledOnce.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    findSpy.called.should.be.false;
-                    rejectSpy.called.should.be.false;
+                    parseSpy.calledOnce.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    findSpy.called.should.be.false();
+                    rejectSpy.called.should.be.false();
                 });
 
                 it('should return custom filters if only those are set', function () {
@@ -290,10 +284,10 @@ describe('Filter', function () {
                             {prop: 'tags', op: 'IN', value: ['photo', 'video']}
                         ]
                     });
-                    parseSpy.calledOnce.should.be.true;
-                    mergeSpy.calledOnce.should.be.true;
-                    findSpy.called.should.be.false;
-                    rejectSpy.called.should.be.false;
+                    parseSpy.calledOnce.should.be.true();
+                    mergeSpy.calledOnce.should.be.true();
+                    findSpy.called.should.be.false();
+                    rejectSpy.called.should.be.false();
                 });
 
                 it('does NOT call parse on enforced filter if it is NOT a string', function () {
@@ -307,10 +301,10 @@ describe('Filter', function () {
                             {prop: 'page', op: '=', value: false}
                         ]
                     });
-                    parseSpy.calledOnce.should.be.false;
-                    mergeSpy.calledOnce.should.be.false;
-                    findSpy.called.should.be.false;
-                    rejectSpy.called.should.be.false;
+                    parseSpy.calledOnce.should.be.false();
+                    mergeSpy.calledOnce.should.be.false();
+                    findSpy.called.should.be.false();
+                    rejectSpy.called.should.be.false();
                 });
 
                 it('does NOT call parse on default filter if it is NOT a string', function () {
@@ -324,10 +318,10 @@ describe('Filter', function () {
                             {prop: 'page', op: '=', value: false}
                         ]
                     });
-                    parseSpy.calledOnce.should.be.false;
-                    mergeSpy.calledOnce.should.be.false;
-                    findSpy.called.should.be.false;
-                    rejectSpy.called.should.be.false;
+                    parseSpy.calledOnce.should.be.false();
+                    mergeSpy.calledOnce.should.be.false();
+                    findSpy.called.should.be.false();
+                    rejectSpy.called.should.be.false();
                 });
 
                 it('does NOT call parse on custom filter if it is NOT a string', function () {
@@ -341,10 +335,10 @@ describe('Filter', function () {
                             {prop: 'page', op: '=', value: false}
                         ]
                     });
-                    parseSpy.calledOnce.should.be.false;
-                    mergeSpy.calledOnce.should.be.true;
-                    findSpy.called.should.be.false;
-                    rejectSpy.called.should.be.false;
+                    parseSpy.calledOnce.should.be.false();
+                    mergeSpy.calledOnce.should.be.true();
+                    findSpy.called.should.be.false();
+                    rejectSpy.called.should.be.false();
                 });
             });
 
@@ -356,10 +350,10 @@ describe('Filter', function () {
                             {prop: 'page', op: '=', value: false, func: 'and'}
                         ]
                     });
-                    parseSpy.calledTwice.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    findSpy.called.should.be.false;
-                    rejectSpy.called.should.be.false;
+                    parseSpy.calledTwice.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    findSpy.called.should.be.false();
+                    rejectSpy.called.should.be.false();
                 });
 
                 it('should merge custom filters if more than one is provided', function () {
@@ -369,10 +363,10 @@ describe('Filter', function () {
                             {prop: 'featured', op: '=', value: true, func: 'and'}
                         ]
                     });
-                    parseSpy.calledTwice.should.be.true;
-                    mergeSpy.calledOnce.should.be.true;
-                    findSpy.called.should.be.false;
-                    rejectSpy.called.should.be.false;
+                    parseSpy.calledTwice.should.be.true();
+                    mergeSpy.calledOnce.should.be.true();
+                    findSpy.called.should.be.false();
+                    rejectSpy.called.should.be.false();
                 });
 
                 it('should try to reduce custom filters if custom and enforced are provided', function () {
@@ -386,12 +380,12 @@ describe('Filter', function () {
                             ], func: 'and'}
                         ]
                     });
-                    parseSpy.calledTwice.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    rejectSpy.calledOnce.should.be.true;
+                    parseSpy.calledTwice.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    rejectSpy.calledOnce.should.be.true();
                     rejectSpy.firstCall.args[0].should.eql([{op: '=', value: 'photo', prop: 'tag'}]);
 
-                    findSpy.calledOnce.should.be.true;
+                    findSpy.calledOnce.should.be.true();
                     findSpy.getCall(0).args.should.eql([
                         [{op: '=', value: 'published', prop: 'status'}],
                         {op: '=', value: 'photo', prop: 'tag'},
@@ -411,13 +405,13 @@ describe('Filter', function () {
                         ]
                     });
 
-                    parseSpy.calledTwice.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    rejectSpy.calledOnce.should.be.true;
+                    parseSpy.calledTwice.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    rejectSpy.calledOnce.should.be.true();
                     rejectSpy.firstCall.args[0].should.eql([{op: '=', value: 'photo', prop: 'tag'},
                         {op: '=', value: 'draft', prop: 'status', func: 'or'}]);
 
-                    findSpy.calledTwice.should.be.true;
+                    findSpy.calledTwice.should.be.true();
                     findSpy.getCall(0).args.should.eql([
                         [{op: '=', value: 'published', prop: 'status'}],
                         {op: '=', value: 'photo', prop: 'tag'},
@@ -437,12 +431,12 @@ describe('Filter', function () {
                         ]
                     });
 
-                    parseSpy.calledTwice.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    rejectSpy.calledOnce.should.be.true;
+                    parseSpy.calledTwice.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    rejectSpy.calledOnce.should.be.true();
                     rejectSpy.firstCall.args[0].should.eql([{op: '=', value: 'draft', prop: 'status'}]);
 
-                    findSpy.calledOnce.should.be.true;
+                    findSpy.calledOnce.should.be.true();
                     findSpy.getCall(0).args.should.eql([
                         [{op: '=', value: 'published', prop: 'status'}],
                         {op: '=', value: 'draft', prop: 'status'},
@@ -462,12 +456,12 @@ describe('Filter', function () {
                         ]
                     });
 
-                    parseSpy.calledTwice.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    rejectSpy.calledOnce.should.be.true;
+                    parseSpy.calledTwice.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    rejectSpy.calledOnce.should.be.true();
                     rejectSpy.firstCall.args[0].should.eql([{op: '=', value: false, prop: 'page'}]);
 
-                    findSpy.calledOnce.should.be.true;
+                    findSpy.calledOnce.should.be.true();
                     findSpy.firstCall.args.should.eql([
                         [{op: '=', prop: 'tag', value: 'photo'}],
                         {op: '=', prop: 'page', value: false},
@@ -489,16 +483,16 @@ describe('Filter', function () {
                         ]
                     });
 
-                    parseSpy.calledTwice.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    rejectSpy.calledOnce.should.be.true;
+                    parseSpy.calledTwice.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    rejectSpy.calledOnce.should.be.true();
 
                     rejectSpy.firstCall.args[0].should.eql([
                         {op: '=', value: false, prop: 'page'},
                         {op: '=', value: 'cameron', prop: 'author'}
                     ]);
 
-                    findSpy.calledTwice.should.be.true;
+                    findSpy.calledTwice.should.be.true();
                     findSpy.firstCall.args.should.eql([
                         [
                             {op: '=', prop: 'tag', value: 'photo'},
@@ -525,12 +519,12 @@ describe('Filter', function () {
                         ]
                     });
 
-                    parseSpy.calledTwice.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    rejectSpy.calledOnce.should.be.true;
+                    parseSpy.calledTwice.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    rejectSpy.calledOnce.should.be.true();
                     rejectSpy.firstCall.args[0].should.eql([{op: '=', value: false, prop: 'page'}]);
 
-                    findSpy.calledOnce.should.be.true;
+                    findSpy.calledOnce.should.be.true();
                     findSpy.firstCall.args.should.eql([
                         [
                             {op: '=', prop: 'tag', value: 'photo'},
@@ -554,13 +548,13 @@ describe('Filter', function () {
                         ]
                     });
 
-                    parseSpy.calledThrice.should.be.true;
-                    mergeSpy.calledTwice.should.be.true;
-                    rejectSpy.calledTwice.should.be.true;
+                    parseSpy.calledThrice.should.be.true();
+                    mergeSpy.calledTwice.should.be.true();
+                    rejectSpy.calledTwice.should.be.true();
                     rejectSpy.firstCall.args[0].should.eql([{op: '=', value: 'photo', prop: 'tag'}]);
                     rejectSpy.secondCall.args[0].should.eql([{op: '=', value: false, prop: 'page', func: 'and'}]);
 
-                    findSpy.calledTwice.should.be.true;
+                    findSpy.calledTwice.should.be.true();
                     findSpy.firstCall.args.should.eql([
                         [{op: '=', prop: 'status', value: 'published'}],
                         {op: '=', prop: 'tag', value: 'photo'},
@@ -588,7 +582,7 @@ describe('Filter', function () {
                     });
 
                     parseSpy.callCount.should.eql(4);
-                    mergeSpy.calledTwice.should.be.true;
+                    mergeSpy.calledTwice.should.be.true();
                     rejectSpy.callCount.should.eql(2);
                     rejectSpy.getCall(0).args[0].should.eql([{op: 'IN', value: ['photo', 'video'], prop: 'tag'},
                         {op: '=', value: 'cameron', prop: 'author', func: 'or'},

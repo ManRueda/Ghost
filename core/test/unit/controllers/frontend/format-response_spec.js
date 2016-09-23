@@ -1,4 +1,3 @@
-/*globals describe, it*/
 var should   = require('should'),
 
     // Stuff we are testing
@@ -15,7 +14,7 @@ describe('formatResponse', function () {
 
             formatted = formatResponse.single(postObject);
 
-            formatted.should.be.an.Object.with.property('post');
+            formatted.should.be.an.Object().with.property('post');
             formatted.post.should.eql(postObject);
         });
     });
@@ -30,7 +29,7 @@ describe('formatResponse', function () {
 
             formatted = formatResponse.channel(data);
 
-            formatted.should.be.an.Object.with.properties('posts', 'pagination');
+            formatted.should.be.an.Object().with.properties('posts', 'pagination');
             formatted.posts.should.eql(data.posts);
             formatted.pagination.should.eql(data.meta.pagination);
         });
@@ -45,7 +44,7 @@ describe('formatResponse', function () {
 
             formatted = formatResponse.channel(data);
 
-            formatted.should.be.an.Object.with.properties('posts', 'pagination', 'tag');
+            formatted.should.be.an.Object().with.properties('posts', 'pagination', 'tag');
             formatted.tag.should.eql(data.data.tag[0]);
         });
 
@@ -64,8 +63,8 @@ describe('formatResponse', function () {
 
             formatted = formatResponse.channel(data);
 
-            formatted.should.be.an.Object.with.properties('posts', 'pagination', 'featured');
-            formatted.featured.should.be.an.Object.with.properties('posts', 'pagination');
+            formatted.should.be.an.Object().with.properties('posts', 'pagination', 'featured');
+            formatted.featured.should.be.an.Object().with.properties('posts', 'pagination');
         });
     });
 });

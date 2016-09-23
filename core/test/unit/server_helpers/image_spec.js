@@ -1,5 +1,3 @@
-/*globals describe, before, afterEach, after, it*/
-/*jshint expr:true*/
 var should         = require('should'),
     sinon          = require('sinon'),
     hbs            = require('express-hbs'),

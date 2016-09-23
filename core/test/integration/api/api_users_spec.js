@@ -1,5 +1,3 @@
-/*globals describe, before, beforeEach, afterEach, it */
-/*jshint expr:true*/
 var testUtils       = require('../../utils'),
     should          = require('should'),
     sinon           = require('sinon'),
@@ -7,7 +5,7 @@ var testUtils       = require('../../utils'),
     _               = require('lodash'),
 
 // Stuff we are testing
-    ModelUser       = require('../../../server/models'),
+    models          = require('../../../server/models'),
     UserAPI         = require('../../../server/api/users'),
     mail            = require('../../../server/api/mail'),
 
@@ -39,7 +37,7 @@ describe('Users API', function () {
     it('dateTime fields are returned as Date objects', function (done) {
         var userData = testUtils.DataGenerator.forModel.users[0];
 
-        ModelUser.User.check({email: userData.email, password: userData.password}).then(function (user) {
+        models.User.check({email: userData.email, password: userData.password}).then(function (user) {
             return UserAPI.read({id: user.id});
         }).then(function (response) {
             response.users[0].created_at.should.be.an.instanceof(Date);
@@ -148,7 +146,7 @@ describe('Users API', function () {
                 .then(function (results) {
                     should.exist(results);
 
-                    expectedUsers = _(results.users).pluck('slug').sortBy().value();
+                    expectedUsers = _(results.users).map('slug').sortBy().value();
 
                     return UserAPI.browse(_.extend({}, testUtils.context.admin, {order: 'slug asc'}));
                 })
@@ -157,7 +155,7 @@ describe('Users API', function () {
 
                     should.exist(results);
 
-                    users = _.pluck(results.users, 'slug');
+                    users = _.map(results.users, 'slug');
                     users.should.eql(expectedUsers);
                 })
                 .then(done)
@@ -171,7 +169,7 @@ describe('Users API', function () {
                 .then(function (results) {
                     should.exist(results);
 
-                    expectedUsers = _(results.users).pluck('slug').sortBy().reverse().value();
+                    expectedUsers = _(results.users).map('slug').sortBy().reverse().value();
 
                     return UserAPI.browse(_.extend({}, testUtils.context.admin, {order: 'slug desc'}));
                 })
@@ -180,7 +178,7 @@ describe('Users API', function () {
 
                     should.exist(results);
 
-                    users = _.pluck(results.users, 'slug');
+                    users = _.map(results.users, 'slug');
                     users.should.eql(expectedUsers);
                 })
                 .then(done)
@@ -206,7 +204,7 @@ describe('Users API', function () {
                 response.users[0].count.posts.should.eql(0);
                 response.users[1].count.posts.should.eql(0);
                 response.users[2].count.posts.should.eql(0);
-                response.users[3].count.posts.should.eql(7);
+                response.users[3].count.posts.should.eql(8);
                 response.users[4].count.posts.should.eql(0);
                 response.users[5].count.posts.should.eql(0);
                 response.users[6].count.posts.should.eql(0);
@@ -237,7 +235,7 @@ describe('Users API', function () {
             } else {
                 testUtils.API.checkResponse(response.users[0], 'user');
             }
-            response.users[0].created_at.should.be.a.Date;
+            response.users[0].created_at.should.be.an.instanceof(Date);
         }
 
         it('Owner can read', function (done) {
@@ -300,7 +298,7 @@ describe('Users API', function () {
             response.users.should.have.length(1);
             testUtils.API.checkResponse(response.users[0], 'user');
             response.users[0].name.should.equal(newName);
-            response.users[0].updated_at.should.be.a.Date;
+            response.users[0].updated_at.should.be.an.instanceof(Date);
         }
 
         it('throws an error if there is an id mismatch', function (done) {
@@ -482,7 +480,7 @@ describe('Users API', function () {
             UserAPI.edit(
                 {users: [{name: 'newname', password: 'newpassword'}]}, _.extend({}, context.author, {id: userIdFor.author})
             ).then(function () {
-                return ModelUser.User.findOne({id: userIdFor.author}).then(function (response) {
+                return models.User.findOne({id: userIdFor.author}).then(function (response) {
                     response.get('name').should.eql('newname');
                     response.get('password').should.not.eql('newpassword');
                     done();
@@ -496,10 +494,6 @@ describe('Users API', function () {
 
         beforeEach(function () {
             newUser = _.clone(testUtils.DataGenerator.forKnex.createUser(testUtils.DataGenerator.Content.users[4]));
-
-            sandbox.stub(ModelUser.User, 'gravatarLookup', function (userData) {
-                return Promise.resolve(userData);
-            });
 
             sandbox.stub(mail, 'send', function () {
                 return Promise.resolve();
@@ -515,7 +509,7 @@ describe('Users API', function () {
             should.not.exist(response.meta);
             response.users.should.have.length(1);
             testUtils.API.checkResponse(response.users[0], 'user', ['roles']);
-            response.users[0].created_at.should.be.a.Date;
+            response.users[0].created_at.should.be.an.instanceof(Date);
         }
 
         describe('Owner', function () {
@@ -698,15 +692,6 @@ describe('Users API', function () {
     });
 
     describe('Destroy', function () {
-        function checkDestroyResponse(response) {
-            should.exist(response);
-            should.exist(response.users);
-            should.not.exist(response.meta);
-            response.users.should.have.length(1);
-            testUtils.API.checkResponse(response.users[0], 'user');
-            response.users[0].created_at.should.be.a.Date;
-        }
-
         describe('Owner', function () {
             it('CANNOT destroy self', function (done) {
                 UserAPI.destroy(_.extend({}, context.owner, {id: userIdFor.owner}))
@@ -719,16 +704,16 @@ describe('Users API', function () {
                 // Admin
                 UserAPI.destroy(_.extend({}, context.owner, {id: userIdFor.admin}))
                     .then(function (response) {
-                        checkDestroyResponse(response);
+                        should.not.exist(response);
                         // Editor
                         return UserAPI.destroy(_.extend({}, context.owner, {id: userIdFor.editor}));
                     }).then(function (response) {
-                        checkDestroyResponse(response);
+                        should.not.exist(response);
 
                         // Author
                         return UserAPI.destroy(_.extend({}, context.owner, {id: userIdFor.author}));
                     }).then(function (response) {
-                        checkDestroyResponse(response);
+                        should.not.exist(response);
 
                         done();
                     }).catch(done);
@@ -747,17 +732,17 @@ describe('Users API', function () {
                 // Admin
                 UserAPI.destroy(_.extend({}, context.admin, {id: userIdFor.admin2}))
                     .then(function (response) {
-                        checkDestroyResponse(response);
+                        should.not.exist(response);
 
                         // Editor
                         return UserAPI.destroy(_.extend({}, context.admin, {id: userIdFor.editor2}));
                     }).then(function (response) {
-                        checkDestroyResponse(response);
+                        should.not.exist(response);
 
                         // Author
                         return UserAPI.destroy(_.extend({}, context.admin, {id: userIdFor.author2}));
                     }).then(function (response) {
-                        checkDestroyResponse(response);
+                        should.not.exist(response);
 
                         done();
                     }).catch(done);
@@ -789,7 +774,7 @@ describe('Users API', function () {
             it('Can destroy self', function (done) {
                 UserAPI.destroy(_.extend({}, context.editor, {id: userIdFor.editor}))
                     .then(function (response) {
-                        checkDestroyResponse(response);
+                        should.not.exist(response);
                         done();
                     }).catch(done);
             });
@@ -797,7 +782,7 @@ describe('Users API', function () {
             it('Can destroy author', function (done) {
                 UserAPI.destroy(_.extend({}, context.editor, {id: userIdFor.author}))
                     .then(function (response) {
-                        checkDestroyResponse(response);
+                        should.not.exist(response);
                         done();
                     }).catch(done);
             });
@@ -851,7 +836,7 @@ describe('Users API', function () {
             response.users.should.have.length(1);
             testUtils.API.checkResponse(response.users[0], 'user', ['roles']);
             response.users[0].name.should.equal(newName);
-            response.users[0].updated_at.should.be.a.Date;
+            response.users[0].updated_at.should.be.an.instanceof(Date);
         }
 
         it('throws an error if there is an id mismatch', function (done) {
@@ -1144,6 +1129,21 @@ describe('Users API', function () {
                     oldPassword: 'wrong',
                     newPassword: 'Sl1m3rson',
                     ne2Password: 'Sl1m3rson'
+                }]
+            };
+            UserAPI.changePassword(payload, _.extend({}, context.owner, {id: userIdFor.owner}))
+                .then(function () {
+                    done(new Error('Password change is not denied.'));
+                }).catch(checkForErrorType('ValidationError', done));
+        });
+
+        it('Owner can\'t change password without old password', function (done) {
+            var payload = {
+                password: [{
+                    user_id: userIdFor.owner,
+                    oldPassword: '',
+                    newPassword: 'Sl1m3rson1',
+                    ne2Password: 'Sl1m3rson1'
                 }]
             };
             UserAPI.changePassword(payload, _.extend({}, context.owner, {id: userIdFor.owner}))

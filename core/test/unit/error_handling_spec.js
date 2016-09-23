@@ -1,5 +1,3 @@
-/*globals describe, after, before, beforeEach, afterEach, it*/
-/*jshint expr:true*/
 var should     = require('should'),
     Promise    = require('bluebird'),
     sinon      = require('sinon'),
@@ -67,7 +65,7 @@ describe('Error handling', function () {
         it('logs default warn with no message supplied', function () {
             errors.logWarn();
 
-            logStub.calledOnce.should.be.true;
+            logStub.calledOnce.should.be.true();
             logStub.calledWith(
                 chalk.yellow('\nWarning: no message supplied'), '\n');
 
@@ -80,7 +78,7 @@ describe('Error handling', function () {
 
             errors.logWarn(errorText);
 
-            logStub.calledOnce.should.be.true;
+            logStub.calledOnce.should.be.true();
             logStub.calledWith(chalk.yellow('\nWarning: ' + errorText), '\n');
 
             // Future tests: This is important here!
@@ -93,7 +91,7 @@ describe('Error handling', function () {
 
             errors.logWarn(errorText, contextText);
 
-            logStub.calledOnce.should.be.true;
+            logStub.calledOnce.should.be.true();
             logStub.calledWith(
                 chalk.yellow('\nWarning: ' + errorText), '\n', chalk.white(contextText), '\n'
             );
@@ -109,7 +107,7 @@ describe('Error handling', function () {
 
             errors.logWarn(errorText, contextText, helpText);
 
-            logStub.calledOnce.should.be.true;
+            logStub.calledOnce.should.be.true();
             logStub.calledWith(
                 chalk.yellow('\nWarning: ' + errorText), '\n', chalk.white(contextText), '\n', chalk.green(helpText), '\n'
             );
@@ -140,8 +138,8 @@ describe('Error handling', function () {
             errors.logError(err);
 
             // Calls log with message on Error objects
-            logStub.calledOnce.should.be.true;
-            logStub.calledWith(chalk.red('\nERROR:',  err.message), '\n', '\n', err.stack, '\n').should.be.true;
+            logStub.calledOnce.should.be.true();
+            logStub.calledWith(chalk.red('\nERROR:',  err.message), '\n', '\n', err.stack, '\n').should.be.true();
         });
 
         it('logs errors from strings', function () {
@@ -150,8 +148,8 @@ describe('Error handling', function () {
             errors.logError(err);
 
             // Calls log with string on strings
-            logStub.calledOnce.should.be.true;
-            logStub.calledWith(chalk.red('\nERROR:', err), '\n').should.be.true;
+            logStub.calledOnce.should.be.true();
+            logStub.calledWith(chalk.red('\nERROR:', err), '\n').should.be.true();
         });
 
         it('logs errors from an error object and two string arguments', function () {
@@ -161,7 +159,7 @@ describe('Error handling', function () {
             errors.logError(err, message, message);
 
             // Calls log with message on Error objects
-            logStub.calledOnce.should.be.true;
+            logStub.calledOnce.should.be.true();
             logStub.calledWith(
                 chalk.red('\nERROR:', err.message), '\n', chalk.white(message), '\n', chalk.green(message), '\n', err.stack, '\n'
             );
@@ -173,10 +171,10 @@ describe('Error handling', function () {
             errors.logError(message, message, message);
 
             // Calls log with message on Error objects
-            logStub.calledOnce.should.be.true;
+            logStub.calledOnce.should.be.true();
             logStub.calledWith(
                 chalk.red('\nERROR:', message), '\n', chalk.white(message), '\n', chalk.green(message), '\n'
-            ).should.be.true;
+            ).should.be.true();
         });
 
         it('logs errors from an undefined error argument', function () {
@@ -186,10 +184,10 @@ describe('Error handling', function () {
 
             // Calls log with message on Error objects
 
-            logStub.calledOnce.should.be.true;
+            logStub.calledOnce.should.be.true();
             logStub.calledWith(
                 chalk.red('\nERROR:', 'An unknown error occurred.'), '\n', chalk.white(message), '\n', chalk.green(message), '\n'
-            ).should.be.true;
+            ).should.be.true();
         });
 
         it('logs errors from an undefined context argument', function () {
@@ -199,8 +197,8 @@ describe('Error handling', function () {
 
             // Calls log with message on Error objects
 
-            logStub.calledOnce.should.be.true;
-            logStub.calledWith(chalk.red('\nERROR:', message), '\n', chalk.green(message), '\n').should.be.true;
+            logStub.calledOnce.should.be.true();
+            logStub.calledWith(chalk.red('\nERROR:', message), '\n', chalk.green(message), '\n').should.be.true();
         });
 
         it('logs errors from an undefined help argument', function () {
@@ -210,8 +208,8 @@ describe('Error handling', function () {
 
             // Calls log with message on Error objects
 
-            logStub.calledOnce.should.be.true;
-            logStub.calledWith(chalk.red('\nERROR:', message), '\n', chalk.white(message), '\n').should.be.true;
+            logStub.calledOnce.should.be.true();
+            logStub.calledWith(chalk.red('\nERROR:', message), '\n', chalk.white(message), '\n').should.be.true();
         });
 
         it('logs errors from a null error argument', function () {
@@ -221,10 +219,10 @@ describe('Error handling', function () {
 
             // Calls log with message on Error objects
 
-            logStub.calledOnce.should.be.true;
+            logStub.calledOnce.should.be.true();
             logStub.calledWith(
                 chalk.red('\nERROR:', 'An unknown error occurred.'), '\n', chalk.white(message), '\n', chalk.green(message), '\n'
-            ).should.be.true;
+            ).should.be.true();
         });
 
         it('logs errors from a null context argument', function () {
@@ -234,8 +232,8 @@ describe('Error handling', function () {
 
             // Calls log with message on Error objects
 
-            logStub.calledOnce.should.be.true;
-            logStub.firstCall.calledWith(chalk.red('\nERROR:', message), '\n', chalk.green(message), '\n').should.be.true;
+            logStub.calledOnce.should.be.true();
+            logStub.firstCall.calledWith(chalk.red('\nERROR:', message), '\n', chalk.green(message), '\n').should.be.true();
         });
 
         it('logs errors from a null help argument', function () {
@@ -245,8 +243,8 @@ describe('Error handling', function () {
 
             // Calls log with message on Error objects
 
-            logStub.calledOnce.should.be.true;
-            logStub.firstCall.calledWith(chalk.red('\nERROR:', message), '\n', chalk.white(message), '\n').should.be.true;
+            logStub.calledOnce.should.be.true();
+            logStub.firstCall.calledWith(chalk.red('\nERROR:', message), '\n', chalk.white(message), '\n').should.be.true();
         });
 
         it('logs promise errors and redirects', function (done) {
@@ -300,19 +298,20 @@ describe('Error handling', function () {
 
             errors.handleAPIError(err, req, res, next);
 
-            next.called.should.be.false;
-            errors.logError.calledOnce.should.be.true;
-            errors.formatHttpErrors.calledOnce.should.be.true;
+            next.called.should.be.false();
+            errors.logError.calledOnce.should.be.true();
+            errors.formatHttpErrors.calledOnce.should.be.true();
 
-            res.status.calledWith(404).should.be.true;
-            res.json.calledOnce.should.be.true;
+            res.status.calledWith(404).should.be.true();
+            res.json.calledOnce.should.be.true();
             res.json.firstCall.args[0].errors[0].message.should.eql(msg);
             res.json.firstCall.args[0].errors[0].errorType.should.eql('NotFoundError');
         });
     });
 
     describe('Rendering', function () {
-        var sandbox;
+        var app,
+            sandbox;
 
         before(function () {
             configUtils.set({
@@ -341,6 +340,7 @@ describe('Error handling', function () {
         });
 
         beforeEach(function () {
+            app = express();
             sandbox = sinon.sandbox.create();
         });
 
@@ -350,29 +350,29 @@ describe('Error handling', function () {
 
         it('Renders end-of-middleware 404 errors correctly', function (done) {
             var req = {method: 'GET'},
-                res = express.response;
+                res = app.response;
 
-            sandbox.stub(express.response, 'render', function (view, options, fn) {
-                /*jshint unused:false */
+            sandbox.stub(res, 'render', function (view, options/*, fn*/) {
                 view.should.match(/user-error\.hbs/);
 
                 // Test that the message is correct
                 options.message.should.equal('Page not found');
+                // Template variable
                 options.code.should.equal(404);
                 this.statusCode.should.equal(404);
 
                 done();
             });
 
-            sandbox.stub(express.response, 'status', function (status) {
-                res.statusCode = status;
-                return res;
+            sandbox.stub(res, 'status', function (status) {
+                this.statusCode = status;
+                return this;
             });
 
             sandbox.stub(res, 'set', function (value) {
                 // Test that the headers are correct
                 value['Cache-Control'].should.eql('no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-                return res;
+                return this;
             });
 
             errors.error404(req, res, done);
@@ -381,29 +381,29 @@ describe('Error handling', function () {
         it('Renders thrown 404 errors correctly', function (done) {
             var err = new Error('A thing was not found'),
                 req = {method: 'GET'},
-                res = express.response;
+                res = app.response;
 
-            sandbox.stub(express.response, 'render', function (view, options, fn) {
-                /*jshint unused:false */
+            sandbox.stub(res, 'render', function (view, options/*, fn*/) {
                 view.should.match(/user-error\.hbs/);
 
                 // Test that the message is correct
                 options.message.should.equal('Page not found');
+                // Template variable
                 options.code.should.equal(404);
                 this.statusCode.should.equal(404);
 
                 done();
             });
 
-            sandbox.stub(express.response, 'status', function (status) {
-                res.statusCode = status;
-                return res;
+            sandbox.stub(res, 'status', function (status) {
+                this.statusCode = status;
+                return this;
             });
 
             sandbox.stub(res, 'set', function (value) {
                 // Test that the headers are correct
                 value['Cache-Control'].should.eql('no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-                return res;
+                return this;
             });
 
             err.status = 404;
@@ -413,14 +413,14 @@ describe('Error handling', function () {
         it('Renders thrown errors correctly', function (done) {
             var err = new Error('I am a big bad error'),
                 req = {method: 'GET'},
-                res = express.response;
+                res = app.response;
 
-            sandbox.stub(express.response, 'render', function (view, options, fn) {
-                /*jshint unused:false */
+            sandbox.stub(res, 'render', function (view, options/*, fn*/) {
                 view.should.match(/user-error\.hbs/);
 
                 // Test that the message is correct
                 options.message.should.equal('I am a big bad error');
+                // Template variable
                 options.code.should.equal(500);
                 this.statusCode.should.equal(500);
 
@@ -430,12 +430,12 @@ describe('Error handling', function () {
             sandbox.stub(res, 'set', function (value) {
                 // Test that the headers are correct
                 value['Cache-Control'].should.eql('no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-                return res;
+                return this;
             });
 
-            sandbox.stub(express.response, 'status', function (status) {
-                res.statusCode = status;
-                return res;
+            sandbox.stub(res, 'status', function (status) {
+                this.statusCode = status;
+                return this;
             });
 
             errors.error500(err, req, res, null);
@@ -444,43 +444,43 @@ describe('Error handling', function () {
         it('Renders 500 errors correctly', function (done) {
             var err = new Error('I am a big bad error'),
                 req = {method: 'GET'},
-                res = express.response;
+                res = app.response;
 
-            sandbox.stub(express.response, 'render', function (view, options, fn) {
-                /*jshint unused:false */
+            sandbox.stub(res, 'render', function (view, options/*, fn*/) {
                 view.should.match(/user-error\.hbs/);
 
                 // Test that the message is correct
                 options.message.should.equal('I am a big bad error');
+                // Template variable
                 options.code.should.equal(500);
                 this.statusCode.should.equal(500);
 
                 done();
             });
 
-            sandbox.stub(express.response, 'status', function (status) {
-                res.statusCode = status;
-                return res;
+            sandbox.stub(res, 'status', function (status) {
+                this.statusCode = status;
+                return this;
             });
 
             sandbox.stub(res, 'set', function (value) {
                 // Test that the headers are correct
                 value['Cache-Control'].should.eql('no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-                return res;
+                return this;
             });
 
-            err.code = 500;
+            err.statusCode = 500;
             errors.error500(err, req, res, null);
         });
 
         it('Renders custom error template if one exists', function (done) {
-            var code = 404,
+            var statusCode = 404,
                 error = {message: 'Custom view test'},
                 req = {
                     session: null
                 },
                 res = {
-                    status: function (code) {
+                    status: function (statusCode) {
                         /*jshint unused:false*/
                         return this;
                     },
@@ -493,7 +493,7 @@ describe('Error handling', function () {
                 },
                 next = null;
             errors.updateActiveTheme('theme-with-error');
-            errors.renderErrorPage(code, error, req, res, next);
+            errors.renderErrorPage(statusCode, error, req, res, next);
         });
     });
 });

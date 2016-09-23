@@ -1,7 +1,9 @@
 var _             = require('lodash'),
     uuid          = require('node-uuid'),
+    moment        = require('moment'),
     globalUtils   = require('../../../server/utils'),
     DataGenerator = {};
+
 /*jshint quotmark:false*/
 // jscs:disable validateQuoteMarks, requireCamelCaseOrUpperCaseIdentifiers
 DataGenerator.Content = {
@@ -53,6 +55,13 @@ DataGenerator.Content = {
             markdown: "<h1>Static page test is what this is for.</h1><p>Hopefully you don't find it a bore.</p>",
             page: 1,
             status: "draft"
+        },
+        {
+            title: "This is a scheduled post!!",
+            slug: "scheduled-post",
+            markdown: "<h1>Welcome to my invisible post!</h1>",
+            status: "scheduled",
+            published_at: moment().add(2, 'days').toDate()
         }
     ],
 
@@ -82,24 +91,28 @@ DataGenerator.Content = {
     // Password = Sl1m3rson
     users: [
         {
+            // owner
             name: 'Joe Bloggs',
             slug: 'joe-bloggs',
             email: 'jbloggs@example.com',
             password: '$2a$10$.pZeeBE0gHXd0PTnbT/ph.GEKgd0Wd3q2pWna3ynTGBkPKnGIKZL6'
         },
         {
+            // editor
             name: 'Smith Wellingsworth',
             slug: 'smith-wellingsworth',
             email: 'swellingsworth@example.com',
             password: '$2a$10$.pZeeBE0gHXd0PTnbT/ph.GEKgd0Wd3q2pWna3ynTGBkPKnGIKZL6'
         },
         {
+            // author
             name: 'Jimothy Bogendath',
             slug: 'jimothy-bogendath',
             email: 'jbOgendAth@example.com',
             password: '$2a$10$.pZeeBE0gHXd0PTnbT/ph.GEKgd0Wd3q2pWna3ynTGBkPKnGIKZL6'
         },
         {
+            // administrator
             name: 'Slimer McEctoplasm',
             slug: 'slimer-mcectoplasm',
             email: 'smcectoplasm@example.com',
@@ -230,6 +243,15 @@ DataGenerator.Content = {
             key: 'setting',
             value: 'value'
         }
+    ],
+
+    subscribers: [
+        {
+            email: 'subscriber1@test.com'
+        },
+        {
+            email: 'subscriber2@test.com'
+        }
     ]
 };
 
@@ -245,7 +267,9 @@ DataGenerator.forKnex = (function () {
         clients;
 
     function createBasic(overrides) {
-        return _.defaults(overrides, {
+        var newObj = _.cloneDeep(overrides);
+
+        return _.defaults(newObj, {
             uuid: uuid.v4(),
             created_by: 1,
             created_at: new Date(),
@@ -255,8 +279,11 @@ DataGenerator.forKnex = (function () {
     }
 
     function createPost(overrides) {
-        return _.defaults(overrides, {
+        var newObj = _.cloneDeep(overrides);
+
+        return _.defaults(newObj, {
             uuid: uuid.v4(),
+            title: 'title',
             status: 'published',
             html: overrides.markdown,
             language: 'en_US',
@@ -291,12 +318,27 @@ DataGenerator.forKnex = (function () {
     }
 
     function createUser(overrides) {
-        return _.defaults(overrides, {
+        var newObj = _.cloneDeep(overrides);
+
+        return _.defaults(newObj, {
             uuid: uuid.v4(),
             status: 'active',
             created_by: 1,
             created_at: new Date()
         });
+    }
+
+    function createClient(overrides) {
+        overrides = overrides || {};
+
+        var newObj = _.cloneDeep(overrides),
+            basics = createBasic(newObj);
+
+        return _.defaults(newObj, {
+            secret: 'not_available',
+            type: 'ua',
+            status: 'enabled'
+        }, basics);
     }
 
     function createGenericUser(uniqueInteger) {
@@ -316,7 +358,9 @@ DataGenerator.forKnex = (function () {
     }
 
     function createAppField(overrides) {
-        return _.defaults(overrides, {
+        var newObj = _.cloneDeep(overrides);
+
+        return _.defaults(newObj, {
             uuid: uuid.v4(),
             created_by: 1,
             created_at: new Date(),
@@ -328,7 +372,9 @@ DataGenerator.forKnex = (function () {
     }
 
     function createAppSetting(overrides) {
-        return _.defaults(overrides, {
+        var newObj = _.cloneDeep(overrides);
+
+        return _.defaults(newObj, {
             uuid: uuid.v4(),
             app_id: 1,
             created_by: 1,
@@ -337,7 +383,9 @@ DataGenerator.forKnex = (function () {
     }
 
     function createToken(overrides) {
-        return _.defaults(overrides, {
+        var newObj = _.cloneDeep(overrides);
+
+        return _.defaults(newObj, {
             token: uuid.v4(),
             client_id: 1,
             expires: Date.now() + globalUtils.ONE_DAY_MS
@@ -351,7 +399,8 @@ DataGenerator.forKnex = (function () {
         createPost(DataGenerator.Content.posts[3]),
         createPost(DataGenerator.Content.posts[4]),
         createPost(DataGenerator.Content.posts[5]),
-        createPost(DataGenerator.Content.posts[6])
+        createPost(DataGenerator.Content.posts[6]),
+        createPost(DataGenerator.Content.posts[7])
     ];
 
     tags = [
@@ -377,7 +426,8 @@ DataGenerator.forKnex = (function () {
     ];
 
     clients = [
-        createBasic({name: 'Ghost Admin', slug: 'ghost-admin', secret: 'not_available', type: 'ua', status: 'enabled'})
+        createClient({name: 'Ghost Admin', slug: 'ghost-admin', type: 'ua'}),
+        createClient({name: 'Ghost Scheduler', slug: 'ghost-scheduler', type: 'web'})
     ];
 
     roles_users = [
@@ -412,6 +462,7 @@ DataGenerator.forKnex = (function () {
         createGenericPost: createGenericPost,
         createTag: createBasic,
         createUser: createUser,
+        createClient: createClient,
         createGenericUser: createGenericUser,
         createBasic: createBasic,
         createRole: createBasic,
@@ -421,6 +472,7 @@ DataGenerator.forKnex = (function () {
         createAppField: createAppField,
         createAppSetting: createAppSetting,
         createToken: createToken,
+        createSubscriber: createBasic,
 
         posts: posts,
         tags: tags,

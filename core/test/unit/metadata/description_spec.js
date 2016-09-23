@@ -1,4 +1,3 @@
-/*globals describe, it*/
 var getMetaDescription = require('../../../server/data/meta/description');
 
 describe('getMetaDescription', function () {
@@ -38,6 +37,18 @@ describe('getMetaDescription', function () {
         description.should.equal('Best tag ever!');
     });
 
+    it('should return data tag description if no meta description for tag', function () {
+        var description = getMetaDescription({
+            tag: {
+                meta_description: '',
+                description: 'The normal description'
+            }
+        }, {
+            context: ['tag']
+        });
+        description.should.equal('The normal description');
+    });
+
     it('should return data post meta description if on root context contains post', function () {
         var description = getMetaDescription({
             post: {
@@ -47,6 +58,17 @@ describe('getMetaDescription', function () {
             context: ['post']
         });
         description.should.equal('Best post ever!');
+    });
+
+    it('should return data post meta description if on root context contains post for an AMP post', function () {
+        var description = getMetaDescription({
+            post: {
+                meta_description: 'Best AMP post ever!'
+            }
+        }, {
+            context: ['amp', 'post']
+        });
+        description.should.equal('Best AMP post ever!');
     });
 
     it('should return data post meta description if on root context contains page', function () {
